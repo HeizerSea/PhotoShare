@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.photoshare.dao.ImgLikeMapper">
+  <resultMap id="BaseResultMap" type="com.demo.photoshare.entity.ImgLike">
+    <id column="li_id" jdbcType="INTEGER" property="liId" />
+    <result column="li_pic_id" jdbcType="INTEGER" property="liPicId" />
+    <result column="li_user_id" jdbcType="INTEGER" property="liUserId" />
+    <result column="like_flag" jdbcType="INTEGER" property="likeFlag" />
+  </resultMap>
+
+  <resultMap id="LikeVoMap" type="com.demo.photoshare.vo.LikeVo">
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="number" jdbcType="INTEGER" property="count" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    li_id, li_pic_id, li_user_id, like_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_img_like
+    where li_id = #{liId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPid" parameterType="java.lang.Integer" resultMap="LikeVoMap">
+    SELECT u.username FROM t_user u
+    INNER JOIN t_img_like l
+    on u.userid = l.li_user_id
+    where l.li_pic_id=#{pid}
+  </select>
+
+  <select id="findCountByPid" parameterType="java.lang.Integer" resultMap="LikeVoMap">
+    SELECT COUNT(1) number FROM t_img_like WHERE li_pic_id=#{pid}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_img_like
+    where li_id = #{liId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.demo.photoshare.entity.ImgLike">
+    insert into t_img_like (li_id, li_pic_id, li_user_id, 
+      like_flag)
+    values (#{liId,jdbcType=INTEGER}, #{liPicId,jdbcType=INTEGER}, #{liUserId,jdbcType=INTEGER}, 
+      #{likeFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.demo.photoshare.entity.ImgLike">
+    insert into t_img_like
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="liId != null">
+        li_id,
+      </if>
+      <if test="liPicId != null">
+        li_pic_id,
+      </if>
+      <if test="liUserId != null">
+        li_user_id,
+      </if>
+      <if test="likeFlag != null">
+        like_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="liId != null">
+        #{liId,jdbcType=INTEGER},
+      </if>
+      <if test="liPicId != null">
+        #{liPicId,jdbcType=INTEGER},
+      </if>
+      <if test="liUserId != null">
+        #{liUserId,jdbcType=INTEGER},
+      </if>
+      <if test="likeFlag != null">
+        #{likeFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.demo.photoshare.entity.ImgLike">
+    update t_img_like
+    <set>
+      <if test="liPicId != null">
+        li_pic_id = #{liPicId,jdbcType=INTEGER},
+      </if>
+      <if test="liUserId != null">
+        li_user_id = #{liUserId,jdbcType=INTEGER},
+      </if>
+      <if test="likeFlag != null">
+        like_flag = #{likeFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where li_id = #{liId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.demo.photoshare.entity.ImgLike">
+    update t_img_like
+    set li_pic_id = #{liPicId,jdbcType=INTEGER},
+      li_user_id = #{liUserId,jdbcType=INTEGER},
+      like_flag = #{likeFlag,jdbcType=INTEGER}
+    where li_id = #{liId,jdbcType=INTEGER}
+  </update>
+
+  <update id="delLike" parameterType="com.demo.photoshare.entity.ImgLike">
+    update t_img_like
+    set like_flag = 0
+    where li_pic_id = #{liPicId,jdbcType=INTEGER} and li_user_id = #{liUserId,jdbcType=INTEGER}
+  </update>
+
+</mapper>
