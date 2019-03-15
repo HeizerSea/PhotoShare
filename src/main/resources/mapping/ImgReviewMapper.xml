@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.photoshare.dao.ImgReviewMapper">
+  <resultMap id="BaseResultMap" type="com.demo.photoshare.entity.ImgReview">
+    <id column="re_id" jdbcType="INTEGER" property="reId" />
+    <result column="re_pic_id" jdbcType="INTEGER" property="rePicId" />
+    <result column="re_user_id" jdbcType="INTEGER" property="reUserId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="review_flag" jdbcType="INTEGER" property="reviewFlag" />
+  </resultMap>
+
+  <resultMap id="ReviewVoMap" type="com.demo.photoshare.vo.ReviewVo">
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+
+  <resultMap id="ReviewConMap" type="com.demo.photoshare.vo.ReviewVo">
+    <result column="number" jdbcType="INTEGER" property="countNum" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    re_id, re_pic_id, re_user_id, content, review_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_img_review
+    where re_id = #{reId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPid" parameterType="java.lang.Integer" resultMap="ReviewVoMap">
+    select u.username,r.content from t_user u
+    INNER JOIN t_img_review r
+    on u.userid = r.re_user_id
+    where r.re_pic_id = #{pid}
+  </select>
+
+  <select id="findCountByPid" parameterType="java.lang.Integer" resultMap="ReviewConMap">
+    SELECT COUNT(1) number FROM t_img_review where re_pic_id = #{pid}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_img_review
+    where re_id = #{reId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.demo.photoshare.entity.ImgReview">
+    insert into t_img_review (re_id, re_pic_id, re_user_id, 
+      content, review_flag)
+    values (#{reId,jdbcType=INTEGER}, #{rePicId,jdbcType=INTEGER}, #{reUserId,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{reviewFlag,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.demo.photoshare.entity.ImgReview">
+    insert into t_img_review
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reId != null">
+        re_id,
+      </if>
+      <if test="rePicId != null">
+        re_pic_id,
+      </if>
+      <if test="reUserId != null">
+        re_user_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="reviewFlag != null">
+        review_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reId != null">
+        #{reId,jdbcType=INTEGER},
+      </if>
+      <if test="rePicId != null">
+        #{rePicId,jdbcType=INTEGER},
+      </if>
+      <if test="reUserId != null">
+        #{reUserId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewFlag != null">
+        #{reviewFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.demo.photoshare.entity.ImgReview">
+    update t_img_review
+    <set>
+      <if test="rePicId != null">
+        re_pic_id = #{rePicId,jdbcType=INTEGER},
+      </if>
+      <if test="reUserId != null">
+        re_user_id = #{reUserId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewFlag != null">
+        review_flag = #{reviewFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where re_id = #{reId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.demo.photoshare.entity.ImgReview">
+    update t_img_review
+    set re_pic_id = #{rePicId,jdbcType=INTEGER},
+      re_user_id = #{reUserId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      review_flag = #{reviewFlag,jdbcType=INTEGER}
+    where re_id = #{reId,jdbcType=INTEGER}
+  </update>
+
+  <update id="delReview" parameterType="com.demo.photoshare.entity.ImgReview">
+    update t_img_review
+    set review_flag = 0
+    where re_pic_id = #{rePicId,jdbcType=INTEGER} and re_user_id = #{reUserId,jdbcType=INTEGER}
+  </update>
+
+</mapper>

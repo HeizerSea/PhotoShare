@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.photoshare.dao.UserImgMapper">
+  <resultMap id="BaseResultMap" type="com.demo.photoshare.entity.UserImg">
+    <id column="picid" jdbcType="INTEGER" property="picid" />
+    <result column="img_uid" jdbcType="INTEGER" property="imgUid" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="pictitle" jdbcType="VARCHAR" property="pictitle" />
+    <result column="imgdesc" jdbcType="VARCHAR" property="imgdesc" />
+    <result column="img_flag" jdbcType="INTEGER" property="imgFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    picid, img_uid, url, pictitle, imgdesc, img_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_img
+    where picid = #{picid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user_img
+    where img_uid = #{img_uid,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user_img
+    where picid = #{picid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.demo.photoshare.entity.UserImg">
+    insert into t_user_img (picid, img_uid, url, 
+      pictitle, imgdesc, img_flag
+      )
+    values (#{picid,jdbcType=INTEGER}, #{imgUid,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
+      #{pictitle,jdbcType=VARCHAR}, #{imgdesc,jdbcType=VARCHAR}, #{imgFlag,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.demo.photoshare.entity.UserImg">
+    insert into t_user_img
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="picid != null">
+        picid,
+      </if>
+      <if test="imgUid != null">
+        img_uid,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="pictitle != null">
+        pictitle,
+      </if>
+      <if test="imgdesc != null">
+        imgdesc,
+      </if>
+      <if test="imgFlag != null">
+        img_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="picid != null">
+        #{picid,jdbcType=INTEGER},
+      </if>
+      <if test="imgUid != null">
+        #{imgUid,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pictitle != null">
+        #{pictitle,jdbcType=VARCHAR},
+      </if>
+      <if test="imgdesc != null">
+        #{imgdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="imgFlag != null">
+        #{imgFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.demo.photoshare.entity.UserImg">
+    update t_user_img
+    <set>
+      <if test="imgUid != null">
+        img_uid = #{imgUid,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pictitle != null">
+        pictitle = #{pictitle,jdbcType=VARCHAR},
+      </if>
+      <if test="imgdesc != null">
+        imgdesc = #{imgdesc,jdbcType=VARCHAR},
+      </if>
+      <if test="imgFlag != null">
+        img_flag = #{imgFlag,jdbcType=INTEGER},
+      </if>
+    </set>
+    where picid = #{picid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.demo.photoshare.entity.UserImg">
+    update t_user_img
+    set img_uid = #{imgUid,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      pictitle = #{pictitle,jdbcType=VARCHAR},
+      imgdesc = #{imgdesc,jdbcType=VARCHAR},
+      img_flag = #{imgFlag,jdbcType=INTEGER}
+    where picid = #{picid,jdbcType=INTEGER}
+  </update>
+
+  <update id="delImg" parameterType="com.demo.photoshare.entity.UserImg">
+    update t_user_img
+    set img_flag = 0
+    where picid = #{picid,jdbcType=INTEGER} and img_uid = #{imgUid,jdbcType=INTEGER}
+  </update>
+
+</mapper>
